@@ -31,8 +31,6 @@ class iterator : public std::iterator<std::random_access_iterator_tag, Vector, s
 		bool operator>=(const iterator &it) const { return _ptr >= it._ptr; };
 		std::ptrdiff_t operator-(const iterator &it) const { return _ptr - it._ptr; };
 		Vector &operator[](std::ptrdiff_t n) { return _ptr[n]; };
-{
-	iterator()
 };
 
 template <typename T>
