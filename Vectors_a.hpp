@@ -30,7 +30,7 @@ class VecIterator
 		VecIterator &operator+=(std::ptrdiff_t n) { _ptr += n; return *this; };
 		VecIterator &operator-=(std::ptrdiff_t n) { _ptr -= n; return *this; };
 		T &operator*() { return *_ptr; };
-		T *operator->() { return *_ptr; };
+		T *operator->() { return _ptr; };
 		bool operator==(const VecIterator &it) const { return _ptr == it._ptr; };
 		bool operator!=(const VecIterator &it) const { return _ptr != it._ptr; };
 		bool operator<(const VecIterator &it) const { return _ptr < it._ptr; };
@@ -41,53 +41,62 @@ class VecIterator
 		T &operator[](std::ptrdiff_t n) { return _ptr[n]; };
 };
 
-template<
-    class T,
-    class Allocator = std::allocator<T>
->
+template <typename T>
 class Vectors: public std::vector<T>
 {
 
 	public:
-		typedef T value_type;
 		typedef VecIterator<T> iterator;
 		typedef VecIterator<T> const_iterator;
-		typedef iterator* iterator_ptr;
+		typedef T value_type;
 		typedef T* pointer;
    		typedef T const * const_pointer;
 		typedef T& reference;
 		typedef T const & const_reference;
 		typedef std::ptrdiff_t difference_type;
-		typedef size_t size_type;
+		typedef unsigned long size_type;
 
-		Vectors(): _ptr(nullptr), m_size(0) {
+		// Vectors(){
+		// 	_vector = new std::vector<T>();
+		// 	_vector->push_back(5);
+		// };
+		Vectors(): _ptr(nullptr), m_capacity(0), m_size(0) {std::cout << "Vectors created" << std::endl;}
+		Vectors(size_type n, const_reference val=value_type()):
+		_ptr(nullptr), m_capacity(0), m_size(0) {
 			std::cout << "Vectors created" << std::endl;
-		};
-		void insert(iterator it, T value) {
-				m_size += 1;
-				_ptr = vec_alloc.allocate(1);
-				difference_type t = &(*it) - &(*this->begin());
-				std::cout << "Distance" << t << std::endl;
-				vec_alloc.construct(&_ptr[t], value);
-				std::cout << "Vectors insert" << _ptr[t] << std::endl;
-		};
+		this->assign(n, val);
+		}
+		void assign(size_type size, const_reference val) {
+		if (size > this->m_capacity)
+			this->reserve(size);
+		size_t i = 0;
+		while (i < size) {
+			if (i >= this->m_size)
+				this->copy_construct(i, val);
+			else
+				this->m_container[i] = val;
+			++i;
+		}
+		while (i < this->m_size)
+			this->m_container[i++].value_type::~value_type();
+		this->m_size = size;
+		}
 		// Vectors( Vectors const & src );
 		// ~Vectors();
 		// void begin( void ){ std::cout << "Testing" << std::endl; };
 		// typename std::vector<T>::iterator begin( void ){ return std::vector<T>::begin(); };
 		// Vectors &		operator=( Vectors const & rhs );
-		iterator mbegin(void) { return iterator(_ptr); };
-		// iterator begin(void) const { return iterator(_ptr); };
-		iterator mend(void) { return iterator(_ptr + m_size); };
-		// iterator end(void) const { return iterator(_ptr + _vector->size()); };
+		iterator begin(void) { return iterator(_ptr); };
 		// begin();
-		// void getValue(void) { 			std::cout << _vector->front()<<std::endl;};
-		// void getValueB(void) { 			std::cout << _vector->back()<<std::endl;};
+		void getValue(void) { 			std::cout << _vector->front()<<std::endl;};
 	private:
+		std::vector<T>	*_vector;
 		pointer _ptr;
 		size_type m_capacity;
 		size_type m_size;
-		Allocator vec_alloc;
+		void copy_construct(size_type idx, const_reference val) {
+		new(&this->m_container[idx]) value_type(val);
+	}
 
 };
 // template <typename T>
