@@ -26,10 +26,11 @@ int main()
 	{
 		std::cout << "Values : "<< *it << std::endl;
 	}
+	v2.clear();
 	// std::copy(v2.begin(), v2.end(), std::ostream_iterator<int>(std::cout, "\n"));
 	// for (i)
 	// a = *it;
 	// std::cout << it.operator[](0) << std::endl;
 	// std::cout << a << std::endl;
-	// *v2; 
+	// *v2;
 }

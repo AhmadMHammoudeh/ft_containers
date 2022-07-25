@@ -63,14 +63,63 @@ class Vectors: public std::vector<T>
 		Vectors(): _ptr(nullptr), m_size(0) {
 			std::cout << "Vectors created" << std::endl;
 		};
-		void insert(iterator it, T value) {
-				m_size += 1;
-				_ptr = vec_alloc.allocate(1);
-				difference_type t = &(*it) - &(*this->begin());
-				std::cout << "Distance" << t << std::endl;
-				vec_alloc.construct(&_ptr[t], value);
-				std::cout << "Vectors insert" << _ptr[t] << std::endl;
+		void assign(size_type count, const T &value){
+
 		};
+		template <class InputIt>
+		void assign(InputIt first, InputIt last){};
+		// void assign( std::initializer_list<T> ilist ){};
+		void reserve( size_type new_cap ){
+			if (new_cap > max_size())
+				throw std::length_error("Vectors::reserve : new_cap > max_size()");
+			if (new_cap > this->capacity())
+			{
+				T *tmp = new T[new_cap];
+				std::copy(this->begin(), this->end(), tmp);
+				delete[] this->_ptr;
+				this->_ptr = tmp;
+				this->m_capacity = new_cap;
+			}
+		}
+		bool empty() const{
+			return this->size() == 0;
+		}
+		size_type size() const{
+			return m_size;
+		}
+		size_type max_size() const {
+			return (size_type)std::numeric_limits<size_type>::max();
+		}
+		size_type capacity() const{
+			return (this->_ptr == nullptr ? 0 : this->m_capacity);
+		}
+		void insert(iterator it, T value)
+		{
+			m_size += 1;
+			_ptr = vec_alloc.allocate(1);
+			difference_type t = &(*it) - &(*this->begin());
+			std::cout << "Distance" << t << std::endl;
+			vec_alloc.construct(&_ptr[t], value);
+			std::cout << "Vectors insert" << _ptr[t] << std::endl;
+		};
+		void clear(){
+			vec_alloc.deallocate(_ptr, m_size);
+			m_size = 0;
+		};
+		iterator erase(iterator it){
+			vec_alloc.destroy(&_ptr[it - &(*this->begin())]);
+			vec_alloc.deallocate(&_ptr[it - &(*this->begin())], 1);
+			m_size -= 1;
+			return it;
+		}
+		iterator erase( iterator first, iterator last ){
+			difference_type t = &(*first) - &(*this->begin());
+			difference_type t2 = &(*last) - &(*this->begin());
+			vec_alloc.destroy(&_ptr[t], &_ptr[t2]);
+			vec_alloc.deallocate(&_ptr[t], t2 - t);
+			m_size -= t2 - t;
+			return first;
+		}
 		// Vectors( Vectors const & src );
 		// ~Vectors();
 		// void begin( void ){ std::cout << "Testing" << std::endl; };
