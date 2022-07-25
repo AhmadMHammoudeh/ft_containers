@@ -48,6 +48,7 @@ class Vectors: public std::vector<T>
 	public:
 		typedef VecIterator<T> iterator;
 		typedef VecIterator<T> const_iterator;
+		typedef iterator* iterator_ptr;
 		typedef T* pointer;
    		typedef T const * const_pointer;
 		typedef T& reference;
@@ -55,21 +56,22 @@ class Vectors: public std::vector<T>
 		typedef std::ptrdiff_t difference_type;
 		typedef unsigned long size_type;
 
-		Vectors(){
+		Vectors(): _ptr(nullptr){
 			std::cout << "Vectors created" << std::endl;
-			_vector = new std::vector<T>();
-			_vector->push_back(5);
 		};
 		// Vectors( Vectors const & src );
 		// ~Vectors();
 		// void begin( void ){ std::cout << "Testing" << std::endl; };
 		// typename std::vector<T>::iterator begin( void ){ return std::vector<T>::begin(); };
 		// Vectors &		operator=( Vectors const & rhs );
-		iterator begin(void) { return iterator(_ptr); };
+		iterator mbegin(void) { return iterator(_ptr); };
+		// iterator begin(void) const { return iterator(_ptr); };
+		iterator mend(void) { return iterator(_ptr); };
+		// iterator end(void) const { return iterator(_ptr + _vector->size()); };
 		// begin();
-		void getValue(void) { 			std::cout << _vector->front()<<std::endl;};
+		// void getValue(void) { 			std::cout << _vector->front()<<std::endl;};
+		// void getValueB(void) { 			std::cout << _vector->back()<<std::endl;};
 	private:
-		std::vector<T>	*_vector;
 		pointer _ptr;
 
 };
