@@ -34,10 +34,10 @@
 // 	//}
 // 	return *this;
 // }
-
-// std::ostream &			operator<<( std::ostream & o, Ft_vectors const & i )
+// template <typename T>
+// std::ostream &			operator<<( std::ostream & o, Vectors<T> & i )
 // {
-// 	//o << "Value = " << i.getValue();
+// 	o << "Value = " << i.getValue();
 // 	return o;
 // }
 
